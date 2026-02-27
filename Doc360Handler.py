@@ -44,6 +44,11 @@ class Handler:
     standard_headers =  { 'api_token': '',
                           'Accept': 'application/json'
                         }
+    put_headers = { 'api_token': '',
+                    'accept': 'application/json',
+                    'content-Type': 'application/json'
+                    }   
+
     project_version_id=""
     base_url = "https://apihub.us.document360.io/v2"
     versions_url = base_url + "/ProjectVersions"
@@ -60,6 +65,10 @@ class Handler:
         self.standard_headers={ 'api_token': self.api_token,
                                 'Accept': 'application/json'
                                 }
+        self.put_headers = { 'api_token': self.api_token,
+                    'accept': 'application/json',
+                    'content-Type': 'application/json'
+                    } 
         return
 
     def get_bookset(self):
@@ -83,7 +92,7 @@ class Handler:
     def update_article_slug(self, article_id, article_lang, article_slug):
         update_url = self.articles_url + "/" + article_id + "/" + article_lang + "/settings"
         request_data = {'slug' : article_slug }
-        response = requests.put(update_url, json=request_data, headers=self.standard_headers)
+        response = requests.put(update_url, json=request_data, headers=self.put_headers)
         time.sleep(0.7)
         return
 
@@ -97,7 +106,8 @@ class Handler:
     def update_category_slug(self, category_id, category_lang, category_slug):
         update_url = self.category_url + "/" + category_id + "/" + category_lang + "/settings"
         request_data = {'slug' : category_slug }
-        response = requests.put(update_url, json=request_data, headers=self.standard_headers)
+        response = requests.put(update_url, json=request_data, headers=self.put_headers)
+        print(category_slug + " - Status Code: " + str(response.status_code))
         time.sleep(0.7)
         return
 

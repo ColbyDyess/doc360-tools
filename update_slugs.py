@@ -68,9 +68,9 @@ def update_slug(data, handler):
     
     # Call different endpoints based on record type
     if article_type == 'a':
-        handler.update_article_slug(article_id, article_type, article_slug)
+        handler.update_article_slug(article_id, article_lang, article_slug)
     elif article_type == 'c':
-        handler.update_category_slug(article_id, article_type, article_slug)
+        handler.update_category_slug(article_id, article_lang, article_slug)
     return
 
 
