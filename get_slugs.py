@@ -63,11 +63,11 @@ def select_bookset_version(data):
 
 ###############################################################################
 #
-# display_article_list
+# write_article_list
 #
 # Writes an entry for each article and all child articles & cateogires
 #
-def display_article_list(data, out_file):
+def write_article_list(data, out_file):
     try:
         for entry  in data['articles']:
             article_id = entry['id']
@@ -77,7 +77,7 @@ def display_article_list(data, out_file):
             out_file.write(format(article_id + "," + article_language + ",a," + article_title + "," + article_slug + "\n"))
             try:
                 for category in entry['child_categories']:
-                    display_child_categories(category, out_file)
+                    write_child_categories(category, out_file)
             except:
                 pass
     except:
@@ -85,7 +85,7 @@ def display_article_list(data, out_file):
     
     try:
         for category in data['child_categories']:
-            display_child_categories(category, out_file)
+            write_child_categories(category, out_file)
     except:
         pass
         #print(f"An exception occurred: {e}")
@@ -94,11 +94,11 @@ def display_article_list(data, out_file):
 
 ###############################################################################
 #
-# display_child_categories
+# write_child_categories
 #
 # Writes the selected category and all child articles to the output file.
 #
-def display_child_categories(data, out_file):
+def write_child_categories(data, out_file):
     try:
         for entry  in data['child_categories']:
             entry_id = entry['id']
@@ -106,7 +106,7 @@ def display_child_categories(data, out_file):
             entry_title = "\"" + entry['name'] + "\""
             entry_slug = entry['slug']
             out_file.write(format(entry_id + "," + entry_language + ",c," + entry_title + "," + entry_slug + "\n"))
-            display_article_list(entry, out_file)
+            write_article_list(entry, out_file)
     except:
         return
     return
@@ -118,13 +118,13 @@ def display_child_categories(data, out_file):
 # Writes the header to the output file.
 #
 def write_table_of_contents(data, out_file):
-    display_child_categories(data, out_file)
+    write_child_categories(data, out_file)
     try:
         for entry  in data['child_categories']:
             name = entry['name']
     except:
         pass
-    display_article_list(data, out_file)
+    write_article_list(data, out_file)
 
     return
 

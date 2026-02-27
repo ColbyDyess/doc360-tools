@@ -11,15 +11,10 @@ import csv
 import requests
 import time        # Basic delay method to avoid rate limits (100 / min) Dumb, but functional
 
-standard_headers =  { 'api_token': '',
-                      'Accept': 'application/json'
-                    }
-
-project_version_id="NONE"
 
 ###############################################################################
 #
-# read_slug_config
+# loadConfig
 #
 # Reads company specific settings from a config file so it's not stored in
 # code. Accepts a filename, but will default to ".config" if none provided.
@@ -88,7 +83,7 @@ class Handler:
     def update_article_slug(self, article_id, article_lang, article_slug):
         update_url = self.articles_url + "/" + article_id + "/" + article_lang + "/settings"
         request_data = {'slug' : article_slug }
-        response = requests.put(update_url, json=request_data, headers=standard_headers)
+        response = requests.put(update_url, json=request_data, headers=self.standard_headers)
         time.sleep(0.7)
         return
 
@@ -102,7 +97,7 @@ class Handler:
     def update_category_slug(self, category_id, category_lang, category_slug):
         update_url = self.category_url + "/" + category_id + "/" + category_lang + "/settings"
         request_data = {'slug' : category_slug }
-        response = requests.put(update_url, json=request_data, headers=standard_headers)
+        response = requests.put(update_url, json=request_data, headers=self.standard_headers)
         time.sleep(0.7)
         return
 
