@@ -62,8 +62,8 @@ def update_slug(data, handler):
     article_id = data[0]
     article_lang = data[1]
     article_type = data[2]
-    article_title = data[3]
-    article_slug = data[4]
+    article_title = data[3] # Not used, but we read it in case we need it later. Also, it makes the input file easier to read.
+    article_slug = data[len(data)-1] # In case the title includes commas, we want to make sure we get the slug value, which is always the last value in the line.
     response = None
     
     # Call different endpoints based on record type
