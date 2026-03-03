@@ -95,7 +95,7 @@ def get_slug_version(args):
 # Make sure we can open the slug update file first
 input_file = get_input_file(sys.argv)
 new_slug_version = get_slug_version(sys.argv)
-output_file_name = input_file.name + new_slug_version + ".csv"
+output_file_name = input_file.name[:(len(input_file.name)-3)] + new_slug_version + ".csv"
 edit_slugs(input_file, new_slug_version, output_file_name)
 print("Output file: " + output_file_name)
 print("")
