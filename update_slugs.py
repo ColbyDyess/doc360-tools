@@ -45,7 +45,7 @@ def get_input_file(args):
 def update_articles(in_file, handler):
     csvFile = csv.reader(in_file)
     # skip the header
-    next(csvFile)
+#    next(csvFile)
     for lines in csvFile:
         update_slug(lines, handler)
     return

@@ -34,7 +34,6 @@ def loadConfig(*args):
     return config_dict
 
 
-
 ###############################################################################
 #
 # CLASS:   Handler
@@ -71,6 +70,14 @@ class Handler:
                     } 
         return
 
+ 
+    ###############################################################################
+    #
+    # get_bookset
+    #
+    # Retrieves the bookset for the project version specified in the config file. 
+    # This is used to get the list of articles and categories that need to be updated.
+    #
     def get_bookset(self):
         request_url = self.versions_url + "/" + self.project_version_id + "/categories?excludeArticles=false&langCode=en&includeCategoryDescription=false"
         try:
@@ -85,29 +92,90 @@ class Handler:
 
     ###############################################################################
     #
-    # update_article_slug
+    # get_article
     #
-    # Updates the specified article with the given slug value.
+    # Retrieves a json object for the specified article.
     #
-    def update_article_slug(self, article_id, article_lang, article_slug):
-        update_url = self.articles_url + "/" + article_id + "/" + article_lang + "/settings"
-        request_data = {'slug' : article_slug }
+    def get_article(self, article_id, article_lang) -> json:
+        request_url = self.articles_url + "/" + article_id + "/" + article_lang
+        try:
+            response = requests.get(request_url, headers=self.standard_headers)
+            time.sleep(0.7)
+        except:
+            raise ValueError("ERROR: Unable to retrieve article content. Is the API token valid?" )
+        if response.status_code!=200:
+            raise ValueError("ERROR: HTTP return code (%d) indicates an issue" % (response.status_code))
+        data = json.loads(json.dumps(response.json()))
+        return data['data']
+
+
+    ###############################################################################
+    #
+    # get_category
+    #
+    # Retrieves a json object for the specified category.
+    #
+    def get_category(self, category_id, category_lang) -> json:
+        request_url = self.category_url + "/" + category_id + "/" + category_lang + "/settings"
+        data = None
+        try:
+            response = requests.get(request_url, headers=self.standard_headers)
+            time.sleep(0.7)
+        except:
+            raise ValueError("ERROR: Unable to retrieve category content. Is the API token valid?" )
+        if response.status_code!=200:
+            raise ValueError("ERROR: HTTP return code (%d) indicates an issue" % (response.status_code))
+        data = json.loads(json.dumps(response.json()))
+        return data['data']
+
+
+    ###############################################################################
+    #
+    # post_article_content
+    #
+    # Updates the specified article's content. Takes in a json object representing the
+    # article and any changes.
+    #
+    def post_article_content(self, article):
+        update_url = self.articles_url + "/" + article['id'] + "/" + article['language']
+        request_data = {'id': article['id'], 'content': article['content']}
         response = requests.put(update_url, json=request_data, headers=self.put_headers)
+        if response.status_code!=200:
+            response_json = response.json()
+            raise ValueError("ERROR: HTTP return code (%d) due to an issue: %s" % (response.status_code, response_json['errors'][0]['description']))
         time.sleep(0.7)
         return
 
 
     ###############################################################################
     #
-    # update_category_slug
+    # post_article_slug
     #
-    # Updates the specified category with the given slug value.
+    # Updates the specified article's slug. Takes in a json object representing the
+    # article and any changes.
     #
-    def update_category_slug(self, category_id, category_lang, category_slug):
-        update_url = self.category_url + "/" + category_id + "/" + category_lang + "/settings"
-        request_data = {'slug' : category_slug }
+    def post_article_slug(self, article):
+        update_url = self.articles_url + "/" + article['id'] + "/" + article['language'] + "/settings"
+        request_data = {'slug': article['slug']}
         response = requests.put(update_url, json=request_data, headers=self.put_headers)
-        print(category_slug + " - Status Code: " + str(response.status_code))
+        if response.status_code!=200:
+            response_json = response.json()
+            raise ValueError("ERROR: HTTP return code (%d) due to an issue: %s" % (response.status_code, response_json['errors'][0]['description']))
         time.sleep(0.7)
         return
 
+
+    ###############################################################################
+    #
+    # post_category_slug
+    #
+    # Updates the specified category with the given slug value.
+    #
+    def post_category_slug(self, category_id, category_lang, category_slug):
+        update_url = self.category_url + "/" + category_id + "/" + category_lang + "/settings"
+        request_data = {'slug' : category_slug }
+        response = requests.put(update_url, json=request_data, headers=self.put_headers)
+        if response.status_code!=200:
+            raise ValueError("ERROR: HTTP return code (%d) indicates an issue" % (response.status_code))
+        time.sleep(0.7)
+        return
