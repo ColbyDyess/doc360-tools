@@ -345,5 +345,5 @@ if count_fail > 0:
         for detail in list_of_failed_articles[item]:
             f.write("\t" + detail + "\n")
     f.close()
-    print(f"See '{FILE_LOG}' for details on which articles failed.")
+    print(f"See '{FILE_OUTPUT_FAILS}' for details on which articles failed.")
 f_log.close()
